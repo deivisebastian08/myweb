@@ -1,111 +1,219 @@
-/* Custom styles for the website */
+/* --- Estilos Globales --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
 
-/* Navigation styles */
+html {
+    scroll-behavior: smooth;
+}
+
+h2 {
+    font-weight: 600;
+}
+
+/* --- Barra de Navegación y Pie de Página --- */
+.navbar, footer {
+    background-color: #4A235A !important;
+}
+
 .navbar {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Sombra más pronunciada */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-/* Carousel styles */
-.carousel-item {
-    height: 500px;
-}
-
-.carousel-item img {
-    object-fit: cover;
-    height: 100%;
-    filter: brightness(0.9); /* Ligeramente más oscuro para mejor contraste del texto */
-}
-
-.carousel-caption {
-    background: rgba(0,0,0,0.6); /* Fondo un poco más oscuro para la leyenda */
-    padding: 25px;
-    border-radius: 15px;
-}
-
-/* News section styles */
-.news-section {
-    background-color: #f4f4f9; /* Un fondo ligeramente morado/gris */
-}
-
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border: none; /* Quitar borde por defecto */
-    border-radius: 10px; /* Bordes más redondeados */
-}
-
-.card:hover {
-    transform: translateY(-10px); /* Efecto de elevación más notorio */
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.card-title {
-    color: #333;
-    font-weight: bold;
-}
-
-/* Footer styles */
-footer {
-    margin-top: 50px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .carousel-item {
-        height: 300px;
-    }
-
-    .carousel-caption {
-        padding: 15px;
-    }
-
-    .carousel-caption h3 { /* Corregido de h2 a h3 */
-        font-size: 1.5rem;
-    }
-
-    .carousel-caption p {
-        font-size: 0.9rem;
-    }
-}
-
-/* INICIO: Cambios de color a morado */
-.bg-dark {
-    background-color: #4A235A !important; /* Morado oscuro para la barra de navegación y el pie de página */
-}
-
-.btn-primary {
-    background-color: #8E44AD; /* Tono de morado para los botones */
-    border-color: #8E44AD;
-    transition: background-color 0.3s ease; /* Transición suave para botones */
-}
-
-.btn-primary:hover {
-    background-color: #6C3483; /* Morado más oscuro para el efecto hover de los botones */
-    border-color: #6C3483;
-}
-
-.nav-link.active, .navbar-brand {
-    color: #fff !important; /* Asegurar que el texto del menú activo y la marca sean blancos */
+    font-weight: 700;
+    font-size: 1.6rem;
 }
 
 .nav-link {
-    color: #e0e0e0 !important; /* Color más suave para otros enlaces del menú */
+    font-weight: 600;
+    color: #e0e0e0 !important;
     transition: color 0.3s ease;
 }
 
-.nav-link:hover {
-    color: #fff !important; /* Resaltar al pasar el mouse */
+.nav-link:hover, .nav-link.active {
+    color: #fff !important;
 }
-/* FIN: Cambios de color a morado */
+
+/* --- Carrusel (Header) --- */
+.carousel-item {
+    height: 600px;
+}
+.carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    filter: brightness(0.7);
+}
+.carousel-caption {
+    background: rgba(74, 35, 90, 0.7);
+    padding: 30px;
+    border-radius: 15px;
+}
+
+/* --- Sección de Noticias --- */
+.news-section {
+    background-color: #fff;
+}
+
+.news-section h2, .services-section h2, .contact-section h2 {
+    color: #4A235A;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-img-top {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    height: 220px;
+    object-fit: cover;
+}
+
+.card-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.card-meta .category {
+    font-weight: 700;
+    color: #af69cd;
+}
+
+.card-title {
+    color: #4A235A;
+    font-weight: 600;
+}
+
+/* --- Sección de Servicios --- */
+.services-section {
+    background-color: #e6ccef;
+}
+
+.service-item i {
+    color: #af69cd;
+    transition: transform 0.3s ease;
+}
+
+.service-item:hover i {
+    transform: scale(1.2);
+}
+
+.service-item h4 {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #4A235A;
+}
+
+/* --- Sección de Llamada a la Acción (CTA) --- */
+.cta-section {
+    position: relative;
+    background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop') center center/cover no-repeat;
+    z-index: 1;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(45deg, rgba(74, 35, 90, 0.85), rgba(175, 105, 205, 0.85));
+    z-index: -1;
+}
+
+.cta-section h2 {
+    font-weight: 700;
+}
+
+.cta-section .btn-light {
+    font-weight: 600;
+    padding: 12px 30px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.cta-section .btn-light:hover {
+    transform: scale(1.05);
+    background-color: #f0f0f0;
+}
+
+/* --- Sección de Contacto --- */
+.contact-section {
+    background-color: #fff;
+}
+
+.form-control:focus {
+    border-color: #af69cd;
+    box-shadow: 0 0 0 0.25rem rgba(175, 105, 205, 0.25);
+}
+
+/* --- Botones y Elementos Interactivos --- */
+.btn-primary {
+    background-color: #af69cd;
+    border-color: #af69cd;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #cb9bde;
+    border-color: #cb9bde;
+    transform: scale(1.05);
+}
+
+.btn-outline-primary {
+    color: #af69cd;
+    border-color: #af69cd;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #af69cd;
+    border-color: #af69cd;
+    transform: scale(1.05);
+}
+
+.social-icons a:hover {
+    color: #cb9bde !important;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    width: 50px; height: 50px;
+    background-color: #af69cd;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 50px;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: all 0.4s ease;
+    opacity: 0; visibility: hidden;
+    z-index: 1000;
+}
+
+.scroll-to-top:hover {
+    background-color: #cb9bde;
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}

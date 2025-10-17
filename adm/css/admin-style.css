@@ -1,0 +1,94 @@
+/* ==================================================
+COMENTARIO: Hoja de Estilos Principal del Admin v1.1 (Restaurada)
+- Mejora: Se añaden estilos para el estado de carga del botón,
+  interruptores personalizados y alertas mejoradas.
+================================================== */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7f6;
+}
+
+/* --- Barra de Navegación --- */
+.navbar.bg-dark {
+    background-color: #4A235A !important; /* Morado Oscuro principal */
+}
+
+.user-info { color: #e0e0e0; }
+.dropdown-menu { border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+/* --- Tarjetas y Contenedores --- */
+.card {
+    border: none; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.card-header {
+    background-color: #8E44AD; /* Morado Antiguo Principal */
+    color: white;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 1rem 1.5rem;
+}
+
+/* --- Formularios --- */
+.form-control:focus {
+    border-color: #8E44AD; box-shadow: 0 0 0 0.25rem rgba(142, 68, 173, 0.25);
+}
+
+.form-switch .form-check-input {
+    width: 3.5em;
+    height: 1.8em;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #8E44AD;
+    border-color: #8E44AD;
+}
+
+/* --- Área para Subir Archivos --- */
+.upload-area {
+    border: 2px dashed #8E44AD; /* Borde Morado Antiguo Principal */
+    border-radius: 10px; padding: 30px; text-align: center;
+    cursor: pointer; transition: all 0.3s ease; background-color: #fdfaff;
+}
+
+.upload-area:hover, .upload-area.dragover {
+    border-color: #6C3483; /* Morado Antiguo Hover */
+    background-color: #f9f0ff;
+}
+
+.upload-area i { color: #8E44AD; }
+.preview-image { max-width: 100%; max-height: 300px; margin-top: 15px; border-radius: 8px; }
+
+/* --- Botones --- */
+.btn-primary {
+    background-color: #8E44AD; border-color: #8E44AD; font-weight: 600;
+    padding: 10px 25px; border-radius: 8px; transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #6C3483; border-color: #6C3483; transform: scale(1.02);
+}
+
+.btn-primary.is-loading {
+    position: relative; color: transparent !important; cursor: not-allowed;
+}
+
+.btn-primary.is-loading .spinner-border {
+    display: inline-block; position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%); width: 1.5rem; height: 1.5rem;
+}
+
+.spinner-border { display: none; }
+
+/* --- Alertas --- */
+.alert-success {
+    background-color: #f0e6f5; /* Tono lila muy claro derivado del morado antiguo */
+    color: #4A235A;
+    border-color: #D2B4DE;
+}
+
+.alert-success .btn-close {
+    filter: invert(20%) sepia(50%) saturate(1500%) hue-rotate(260deg);
+}

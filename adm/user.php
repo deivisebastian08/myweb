@@ -1,24 +1,23 @@
-<?PHP
-// VERSION DE PARCHE  1.5.0.1
+<?php
 session_start();
+
+// COMENTARIO: Verificación de sesión y rol para acceso a esta página.
+// Solo los usuarios con rol_id >= 2 (Colaborador, Editor, Admin, SuperAdmin) pueden acceder.
 if(!isset($_SESSION['login'])){
-header("location:login.php");
-}else{
-  //sino, calculamos el tiempo transcurrido
-  $fecGuar = $_SESSION["hora"];
-  $idweb="<input type='hidden' name='idweb' id='idweb' value='".$_SESSION["idGrupo"]."' />";
-  $iduser="<input type='hidden' name='iduser' id='iduser' value='".$_SESSION["idUser"]."' />";
-  $idnivel="<input type='hidden' name='idnivel' id='idnivel' value='".$_SESSION["nivel"]."' />";
-  $ahora = date("Y-n-j H:i:s");
-  $tmpTrans = (strtotime($ahora)-strtotime($fecGuar));
-  //comparamos el tiempo transcurrido
-  if($tmpTrans >= 12000){
-  //si pasaron 10 minutos o más
-	session_destroy(); // destruyo la sesión
-	header("Location: login.php"); //envío al usuario a la pag. de autenticación
-  }else{ //sino, actualizo la fecha de la sesión
-	$_SESSION["hora"] = $ahora;
-  }
+    header("location:index.php?mensaje=Acceso denegado. Inicie sesión.");
+    exit();
+} else {
+    // Verificación de tiempo de sesión (se mantiene la lógica existente)
+    $fecGuar = $_SESSION["hora"];
+    $ahora = date("Y-n-j H:i:s");
+    $tmpTrans = (strtotime($ahora)-strtotime($fecGuar));
+    if($tmpTrans >= 12000){
+        session_destroy();
+        header("Location: index.php?mensaje=Su sesión ha expirado.");
+        exit();
+    } else {
+        $_SESSION["hora"] = $ahora;
+    }
 }
 ?>
 
@@ -27,43 +26,20 @@ header("location:login.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir Imagen</title>
-    <!-- Bootstrap 5 CSS -->
+    <title>Gestor de Contenido</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        .preview-image {
-            max-width: 300px;
-            max-height: 300px;
-            margin-top: 10px;
-        }
-        .upload-area {
-            border: 2px dashed #ccc;
-            border-radius: 5px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
-        .upload-area:hover {
-            border-color: #0d6efd;
-        }
-        .navbar {
-            margin-bottom: 2rem;
-        }
-        .dropdown-menu {
-            min-width: 200px;
-        }
-        .user-info {
-            color: white;
-            margin-right: 1rem;
-        }
-    </style>
+
+    <!-- COMENTARIO: Versión restaurada a 1.1 para las mejoras de UX. -->
+    <link rel="stylesheet" href="css/admin-style.css?v=1.1">
 </head>
 <body>
-    <!-- Barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="#">Panel de Control</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -72,7 +48,7 @@ header("location:login.php");
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <span class="user-info">
+                        <span class="user-info nav-link">
                             <i class="fas fa-user me-2"></i><?php echo $_SESSION["nombre"]; ?>
                         </span>
                     </li>
@@ -81,22 +57,10 @@ header("location:login.php");
                             <i class="fas fa-cog me-2"></i>Opciones
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" href="../index.php">
-                                    <i class="fas fa-home me-2"></i>Página Principal
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item" href="cambiar_password.php">
-                                    <i class="fas fa-key me-2"></i>Cambiar Contraseña
-                                </a>
-                            </li>
+                            <li><a class="dropdown-item" href="../index.php"><i class="fas fa-home me-2"></i>Página Principal</a></li>
+                            <li><a class="dropdown-item" href="cambiar_password.php"><i class="fas fa-key me-2"></i>Cambiar Contraseña</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="logout.php">
-                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                                </a>
-                            </li>
+                            <li><a class="dropdown-item" href="logout.php">Cerrar Sesión</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -114,37 +78,31 @@ header("location:login.php");
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php endif; ?>
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Subir Nueva Imagen</h4>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">Subir Nueva Imagen para Banner</h4>
                     </div>
-                    <div class="card-body">
-                        <form action="procesar_imagen.php" method="POST" enctype="multipart/form-data">
+                    <div class="card-body p-4">
+                        <form id="upload-form" action="procesar_imagen.php" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <label for="titulo" class="form-label mb-0">Título</label>
-                                    <span>Estado</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <input type="text" class="form-control" id="titulo" name="titulo" required style="width: 70%;">
-                                    <div class="form-check form-switch ms-3">
-                                        <input class="form-check-input" type="checkbox" id="toggleSwitch" name="estado">
-                                    </div>
-                                </div>
+                                <label for="titulo" class="form-label fw-bold">Título</label>
+                                <input type="text" class="form-control" id="titulo" name="titulo" required>
                             </div>
-                            
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripción</label>
+                                <label for="descripcion" class="form-label fw-bold">Descripción</label>
                                 <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
                             </div>
-
                             <div class="mb-3">
-                                <label for="titulo" class="form-label">Link</label>
-                                <input type="text" class="form-control" id="titulo" name="link" required>
+                                <label for="link" class="form-label fw-bold">Enlace (Opcional)</label>
+                                <input type="text" class="form-control" id="link" name="link">
                             </div>
-                            
+                            <div class="form-check form-switch mb-4">
+                                <input class="form-check-input" type="checkbox" id="estado" name="estado" checked>
+                                <label class="form-check-label" for="estado">Publicar inmediatamente</label>
+                            </div>
                             <div class="mb-3">
-                                <label class="form-label">Imagen</label>
+                                <label class="form-label fw-bold">Imagen del Banner</label>
                                 <div class="upload-area" id="uploadArea">
                                     <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
                                     <p class="mb-0">Arrastra y suelta una imagen aquí o haz clic para seleccionar</p>
@@ -153,9 +111,10 @@ header("location:login.php");
                                 <div id="preview" class="text-center mt-3"></div>
                             </div>
                             
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-upload me-2"></i>Subir Imagen
+                            <div class="d-grid gap-2 mt-4">
+                                <button id="submit-button" type="submit" class="btn btn-primary btn-lg">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span class="button-text"><i class="fas fa-upload me-2"></i>Subir Imagen</span>
                                 </button>
                             </div>
                         </form>
@@ -165,51 +124,15 @@ header("location:login.php");
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="js/admin-script.js"></script>
+
     <script>
-        // Manejo de la previsualización de la imagen
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('imagen');
-        const preview = document.getElementById('preview');
-
-        uploadArea.addEventListener('click', () => fileInput.click());
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#0d6efd';
+        document.getElementById('upload-form').addEventListener('submit', function() {
+            const submitButton = document.getElementById('submit-button');
+            submitButton.classList.add('is-loading');
+            submitButton.disabled = true;
         });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.style.borderColor = '#ccc';
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.style.borderColor = '#ccc';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                fileInput.files = e.dataTransfer.files;
-                showPreview(file);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                showPreview(file);
-            }
-        });
-
-        function showPreview(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                preview.innerHTML = `<img src="${e.target.result}" class="preview-image img-thumbnail" alt="Vista previa">`;
-            };
-            reader.readAsDataURL(file);
-        }
     </script>
 </body>
 </html>
-

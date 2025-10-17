@@ -1,0 +1,115 @@
+/* ==================================================
+COMENTARIO: Rediseño UX/UI del Login v4.2 (Restaurado)
+- Mejora: Se actualiza la imagen de fondo a una con cielo nocturno.
+- Funcionalidad: 100% intacta.
+================================================== */
+
+body, html {
+    margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; overflow: hidden;
+}
+
+/* COMENTARIO: Contenedor principal con la nueva imagen de fondo de cielo nocturno. */
+.login-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    background: url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=1950&q=80') no-repeat center center;
+    background-size: cover;
+}
+
+/* COMENTARIO: Tarjeta de login con efecto "cristal esmerilado" (frosted glass). */
+.login-card {
+    width: 450px; padding: 40px; border-radius: 20px; background-color: rgba(230, 204, 239, 0.2);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    z-index: 3; text-align: center;
+}
+
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.bts-logo {
+    height: 50px; /* Altura del logo */
+    width: auto;
+    fill: #fff; /* Color del logo: blanco */
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
+}
+
+.bts-logo:hover {
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.7));
+    transform: scale(1.05);
+}
+
+.welcome-script {
+    font-family: 'Great Vibes', cursive; color: #fff; font-size: 3rem; font-weight: 500; margin-bottom: 10px;
+}
+
+.welcome-text {
+    color: #e0e0e0; margin-bottom: 30px;
+}
+
+.login-heading {
+    font-weight: 700; color: #fff; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
+}
+
+.input-group-text {
+    background-color: transparent; border: none; color: #fff;
+}
+
+.form-control {
+    background-color: rgba(255,255,255,0.2); border: none; border-radius: 8px !important; color: #fff;
+}
+
+.form-control::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.form-control:focus {
+    background-color: rgba(255,255,255,0.3); box-shadow: none; color: #fff;
+}
+
+.captcha-img {
+    border-radius: 8px;
+}
+
+.form-options {
+    color: #e0e0e0; font-size: 0.9rem;
+}
+
+.form-options a {
+    color: #fff; text-decoration: none;
+}
+
+.form-options a:hover {
+    text-decoration: underline;
+}
+
+.form-check-input {
+    background-color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3);
+}
+
+.form-check-input:checked {
+    background-color: #af69cd; border-color: #af69cd;
+}
+
+.login_btn {
+    padding: 12px; font-size: 1.1rem; font-weight: 600; border-radius: 8px; border: none;
+    background: linear-gradient(45deg, #af69cd, #cb9bde); color: white; transition: all 0.3s ease;
+}
+
+.login_btn:hover {
+    transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.links a {
+    color: #fff; font-weight: 500; text-decoration: none; transition: color 0.3s ease;
+}
+
+.links a:hover {
+    color: #e0e0e0;
+}
