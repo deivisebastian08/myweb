@@ -24,50 +24,6 @@ $cn->Close();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .carousel-item {
-            height: 500px;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-        .carousel-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .carousel-caption {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 80%;
-            margin: 0 auto;
-        }
-        .carousel-caption h3 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        .carousel-caption p {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-
-        /* INICIO: Cambios de color a morado */
-        .bg-dark {
-            background-color: #4A235A !important; /* Morado oscuro para la barra de navegación y el pie de página */
-        }
-
-        .btn-primary {
-            background-color: #8E44AD; /* Tono de morado para los botones */
-            border-color: #8E44AD;
-        }
-
-        .btn-primary:hover {
-            background-color: #6C3483; /* Morado más oscuro para el efecto hover de los botones */
-            border-color: #6C3483;
-        }
-        /* FIN: Cambios de color a morado */
-    </style>
 </head>
 <body>
     <!-- Navigation Menu -->
@@ -116,7 +72,7 @@ $cn->Close();
                 <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
                     <img src="images/banner/<?php echo htmlspecialchars($banner['Imagen']); ?>" 
                          class="d-block w-100" alt="<?php echo htmlspecialchars($banner['Titulo']); ?>">
-                    <div class="carousel-caption">
+                    <div class="carousel-caption d-none d-md-block">
                         <h3><?php echo htmlspecialchars($banner['Titulo']); ?></h3>
                         <p><?php echo htmlspecialchars($banner['Describir']); ?></p>
                         <?php if(!empty($banner['Enlace'])): ?>
@@ -130,7 +86,7 @@ $cn->Close();
             <?php else: ?>
                 <div class="carousel-item active">
                     <img src="images/banner/default.jpg" class="d-block w-100" alt="Banner por defecto">
-                    <div class="carousel-caption">
+                    <div class="carousel-caption d-none d-md-block">
                         <h3>Bienvenido</h3>
                         <p>No hay banners activos en este momento.</p>
                     </div>
