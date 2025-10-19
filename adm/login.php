@@ -1,88 +1,101 @@
 <?php
-	//========================================================================//
-	//  PROYEC : ADMINISTRADOR DE CONTENIDOS WEB
-	//	AUTOR  : JUAN CARLOS PINTO LARICO
-	//	FECHA  : JULIO   2021
-	//	VERSION: 1.0.0
-	//  E-MAIL : jcpintol@hotmail.com
-	//========================================================================//
-	function fnComprueba(&$msg){
-	  if( md5($_POST ['clave'])!= $_SESSION['key'])	return 0;
-	  else	return 1;   
-	}
-	/* USER-AGENTS
-	================================================== */
-	function VerificaEquipo( $type = NULL ) {
-			$user_agent = strtolower ( $_SERVER['HTTP_USER_AGENT'] );
-			if ( $type == 'bot' ) {
-					// matches popular bots
-					if ( preg_match ( "/googlebot|adsbot|yahooseeker|yahoobot|msnbot|watchmouse|pingdom\.com|feedfetcher-google/", $user_agent ) ) {
-							return true;
-							// watchmouse|pingdom\.com are "uptime services"
-					}
-			} else if ( $type == 'browser' ) {
-					// matches core browser types
-					if ( preg_match ( "/mozilla\/|opera\//", $user_agent ) ) {
-							return true;
-					}
-			} else if ( $type == 'mobile' ) {
-					// matches popular mobile devices that have small screens and/or touch inputs
-					// mobile devices have regional trends; some of these will have varying popularity in Europe, Asia, and America
-					// detailed demographics are unknown, and South America, the Pacific Islands, and Africa trends might not be represented, here
-					if ( preg_match ( "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|windows ce|nokia|fennec|hiptop|kindle|mot |mot-|webos\/|samsung|sonyericsson|^sie-|nintendo/", $user_agent ) ) {
-							// these are the most common
-							return true;
-					} else if ( preg_match ( "/mobile|pda;|avantgo|eudoraweb|minimo|netfront|brew|teleca|lg;|lge |wap;| wap /", $user_agent ) ) {
-							// these are less common, and might not be worth checking
-							return true;
-					}
-			}
-			return false;
-	}
-	//-------------------------------------------------------------------------//
-	session_start();
-	if(isset($_SESSION['login'])){ 
-		header("location:user.php"); 
-	}else{
-		if(isset($_POST['users'])){
-			//HOJA PROCESADA
-			if( $_POST['clave'] == "true" || fnComprueba($msg) == 1){
-			  require_once("script/conex.php");
-			  $cn= new MySQLcn();
-			  $login = htmlspecialchars(trim($_POST['users']));
-			  $pass = trim($_POST['pass']);
-			  $querys ="CALL Acceder('$login','$pass');";
-			  $cn->Query($querys);
-			  $result = $cn->FetRows();
-			  if($result && $result[0] != 'No Existe'){
-				$data = $result;
-				$cn->Close();
-				$_SESSION["idUser"]=$data[0];
-				$_SESSION["idGrupo"]=$data[1];
-				$_SESSION["login"]=$data[3];
-				$_SESSION["nivel"]=$data[4];
-				$_SESSION["nombre"]=$data[2];
-				$_SESSION["hora"]=date("Y-n-j H:i:s");
-				header("location:user.php");
-				exit(); 
-			  }else{
-				$mensaje="Usuario o Contraseña Incorrecto";
-				header("location:index.php?mensaje=$mensaje");
-				exit();
-			  }
-			}else{
-				$mensaje="Datos de Imagen Incorrecta";
-				header("location:index.php?mensaje=$mensaje");
-				exit();
-			}			
-		}else{
-			if(VerificaEquipo('mobile')){
-				$mensaje="Iniciar&nbsp;&nbsp;Sesi&oacute;n Mobil";
-			}else{
-				$mensaje="Iniciar&nbsp;&nbsp;Sesi&oacute;n Web";
-			}
-		}
-		header("location:index.php?mensaje=$mensaje");
-		exit();
-	}
+session_start();
+
+// Verificación de captcha (generax.php guarda md5 en $_SESSION['key'])
+function fnComprueba(&$msg){
+  if (!isset($_POST['clave']) || !isset($_SESSION['key'])) return 0;
+  return (md5(strtolower(trim($_POST['clave']))) === $_SESSION['key']) ? 1 : 0;
+}
+
+// Si ya hay sesión, usar enrutador por rol
+if(isset($_SESSION['user_id'])){
+    header("Location: router.php");
+    exit();
+}
+
+// Procesar login
+if(isset($_POST['email']) || isset($_POST['login']) || isset($_POST['users'])){
+    if(fnComprueba($msg) != 1){
+        header("Location: index.php?mensaje=".urlencode("El texto de la imagen es incorrecto."));
+        exit();
+    }
+
+    // Tomar credenciales desde cualquiera de los nombres soportados
+    if (isset($_POST['email'])) { $loginInput = trim($_POST['email']); }
+    elseif (isset($_POST['login'])) { $loginInput = trim($_POST['login']); }
+    else { $loginInput = trim($_POST['users'] ?? ''); }
+    $pass = isset($_POST['password']) ? trim($_POST['password']) : trim($_POST['pass'] ?? '');
+
+    require_once 'script/Supabase.php';
+    $supabase = new Supabase();
+
+    // Consultar por email o por nombre, trayendo rol embebido y rol_id para fallback
+    $select = 'id,nombre,email,password,estado,rol_id,rol:rol_id(slug,nombre)';
+    if (strpos($loginInput, '@') !== false) {
+        $data = $supabase->from('usuarios', [
+            'select' => $select,
+            'email'  => 'eq.' . $loginInput,
+            'limit'  => 1
+        ]);
+    } else {
+        $data = $supabase->from('usuarios', [
+            'select' => $select,
+            'nombre' => 'eq.' . $loginInput,
+            'limit'  => 1
+        ]);
+        if (!$data || empty($data)) {
+            // fallback por email
+            $data = $supabase->from('usuarios', [
+                'select' => $select,
+                'email'  => 'eq.' . $loginInput,
+                'limit'  => 1
+            ]);
+        }
+    }
+
+    $user = ($data && isset($data[0])) ? $data[0] : null;
+
+    // Validar usuario, estado y password
+    if($user && isset($user['password']) && ($user['estado'] === 'activo') && password_verify($pass, $user['password'])){
+        // Resolver slug del rol
+        $rol_slug = null;
+        if (isset($user['rol']) && is_array($user['rol']) && isset($user['rol']['slug'])) {
+            $rol_slug = $user['rol']['slug'];
+        } else if (isset($user['rol_id'])) {
+            // Intento secundario: leer roles
+            $roleRow = $supabase->from('roles', [
+                'select' => 'slug',
+                'id'     => 'eq.' . $user['rol_id'],
+                'limit'  => 1
+            ]);
+            if ($roleRow && isset($roleRow[0]['slug'])) $rol_slug = $roleRow[0]['slug'];
+        }
+        if (!$rol_slug) { $rol_slug = 'usuario_publico'; }
+        $rol_slug = strtolower(str_replace(['_', ' '], '-', trim($rol_slug)));
+
+        // Guardar sesión unificada para router.php
+        session_regenerate_id(true);
+        $_SESSION['user_id'] = (int)$user['id'];
+        $_SESSION['user_nombre'] = $user['nombre'];
+        $_SESSION['user_rol_slug'] = $rol_slug;
+        $_SESSION['hora'] = date('Y-n-j H:i:s');
+
+        // Compatibilidad con dashboards legados
+        $_SESSION['login'] = $user['nombre'];
+        $_SESSION['nombre'] = $user['nombre'];
+        if (isset($user['rol_id'])) {
+            $_SESSION['rol_id'] = (int)$user['rol_id'];
+        }
+
+        header('Location: router.php');
+        exit();
+    }
+
+    header("Location: index.php?mensaje=".urlencode('Usuario/contraseña incorrectos o cuenta inactiva.'));
+    exit();
+}
+
+// Acceso directo sin POST
+header("Location: index.php");
+exit();
 ?>

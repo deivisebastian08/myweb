@@ -1,31 +1,39 @@
 /* ==================================================
-COMENTARIO: Rediseño UX/UI del Login v4.2 (Restaurado)
-- Mejora: Se actualiza la imagen de fondo a una con cielo nocturno.
-- Funcionalidad: 100% intacta.
+COMENTARIO: Hoja de Estilos del Login v5.0
+- Paleta de Colores Personalizada (Azul/Verde)
 ================================================== */
+
+:root {
+    --primary: #033f63;
+    --secondary: #28666e;
+    --accent: #fedc97;
+    --success: #7c9885;
+    --warning: #b5b682;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --white: #ffffff;
+}
 
 body, html {
     margin: 0; padding: 0; height: 100%; font-family: 'Poppins', sans-serif; overflow: hidden;
 }
 
-/* COMENTARIO: Contenedor principal con la nueva imagen de fondo de cielo nocturno. */
 .login-container {
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    position: relative;
-    background: url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=1950&q=80') no-repeat center center;
-    background-size: cover;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
 }
 
-/* COMENTARIO: Tarjeta de login con efecto "cristal esmerilado" (frosted glass). */
 .login-card {
-    width: 450px; padding: 40px; border-radius: 20px; background-color: rgba(230, 204, 239, 0.2);
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    z-index: 3; text-align: center;
+    width: 450px; padding: 40px; border-radius: 20px;
+    background-color: var(--glass-bg);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    text-align: center;
 }
 
 .logo-container {
@@ -33,20 +41,18 @@ body, html {
 }
 
 .bts-logo {
-    height: 50px; /* Altura del logo */
-    width: auto;
-    fill: #fff; /* Color del logo: blanco */
+    height: 50px; width: auto; fill: var(--white);
     transition: all 0.3s ease;
     filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
 }
 
 .bts-logo:hover {
-    filter: drop-shadow(0 0 15px rgba(255,255,255,0.7));
+    filter: drop-shadow(0 0 15px var(--accent));
     transform: scale(1.05);
 }
 
 .welcome-script {
-    font-family: 'Great Vibes', cursive; color: #fff; font-size: 3rem; font-weight: 500; margin-bottom: 10px;
+    font-family: 'Great Vibes', cursive; color: var(--white); font-size: 3rem; font-weight: 500; margin-bottom: 10px;
 }
 
 .welcome-text {
@@ -54,15 +60,15 @@ body, html {
 }
 
 .login-heading {
-    font-weight: 700; color: #fff; font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
+    font-weight: 700; color: var(--white); font-size: 1.2rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px;
 }
 
 .input-group-text {
-    background-color: transparent; border: none; color: #fff;
+    background-color: transparent; border: none; color: var(--white);
 }
 
 .form-control {
-    background-color: rgba(255,255,255,0.2); border: none; border-radius: 8px !important; color: #fff;
+    background-color: var(--glass-bg); border: 1px solid transparent; border-radius: 8px !important; color: var(--white);
 }
 
 .form-control::placeholder {
@@ -70,7 +76,8 @@ body, html {
 }
 
 .form-control:focus {
-    background-color: rgba(255,255,255,0.3); box-shadow: none; color: #fff;
+    background-color: rgba(255,255,255,0.28); box-shadow: 0 0 0 0.15rem rgba(3,63,99,0.25); color: var(--white);
+    border-color: var(--primary);
 }
 
 .captcha-img {
@@ -82,34 +89,56 @@ body, html {
 }
 
 .form-options a {
-    color: #fff; text-decoration: none;
+    color: var(--white); text-decoration: none;
 }
 
 .form-options a:hover {
+    color: var(--accent);
     text-decoration: underline;
 }
 
-.form-check-input {
-    background-color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3);
-}
-
 .form-check-input:checked {
-    background-color: #af69cd; border-color: #af69cd;
+    background-color: var(--success);
+    border-color: var(--success);
 }
 
 .login_btn {
     padding: 12px; font-size: 1.1rem; font-weight: 600; border-radius: 8px; border: none;
-    background: linear-gradient(45deg, #af69cd, #cb9bde); color: white; transition: all 0.3s ease;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    color: white;
+    transition: all 0.3s ease;
 }
 
 .login_btn:hover {
-    transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 28px rgba(40,102,110,0.35);
 }
 
 .links a {
-    color: #fff; font-weight: 500; text-decoration: none; transition: color 0.3s ease;
+    color: var(--white); font-weight: 500; text-decoration: none; transition: color 0.3s ease;
 }
 
 .links a:hover {
-    color: #e0e0e0;
+    color: var(--accent);
 }
+
+/* Particles background */
+#particles {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+.particle {
+    position: absolute; top: -20px; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--primary); box-shadow: 0 0 10px rgba(3,63,99,0.4);
+    animation: floatDown linear infinite;
+}
+@keyframes floatDown {
+    from { transform: translateY(-10vh); }
+    to { transform: translateY(110vh); }
+}
+
+/* Password toggle button */
+.btn-toggle-password {
+    background: transparent; border: none; color: var(--white); padding: 0 10px;
+}
+.btn-toggle-password:hover { color: var(--accent); }
+.btn-toggle-password:focus { outline: none; }

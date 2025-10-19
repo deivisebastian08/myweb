@@ -1,39 +1,56 @@
-/* --- Estilos Globales --- */
+/* ==================================================
+COMENTARIO: Hoja de Estilos Principal v3.0
+- Paleta de Colores Personalizada (Azul/Verde)
+================================================== */
+
+:root {
+    --primary: #033f63;
+    --secondary: #28666e;
+    --success: #7c9885;
+    --warning: #b5b682;
+    --accent: #fedc97;
+    --danger: #ef4444;
+    --white: #ffffff;
+    --gray-light: #f1f5f9;
+    --gray-medium: #64748b;
+    --gray-dark: #1e293b;
+    --black: #0f172a;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
-    color: #333;
+    color: var(--gray-dark);
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
 }
 
 html {
     scroll-behavior: smooth;
 }
 
-h2 {
-    font-weight: 600;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary);
+    font-weight: 700;
 }
 
-/* --- Barra de Navegación y Pie de Página --- */
-.navbar, footer {
-    background-color: #4A235A !important;
-}
-
+/* --- Barra de Navegación --- */
 .navbar {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.6rem;
+    color: var(--white) !important;
 }
 
 .nav-link {
-    font-weight: 600;
-    color: #e0e0e0 !important;
+    color: var(--gray-light) !important;
     transition: color 0.3s ease;
 }
 
 .nav-link:hover, .nav-link.active {
-    color: #fff !important;
+    color: var(--accent) !important;
 }
 
 /* --- Carrusel (Header) --- */
@@ -43,21 +60,21 @@ h2 {
 .carousel-item img {
     object-fit: cover;
     height: 100%;
-    filter: brightness(0.7);
+    filter: brightness(0.8);
 }
 .carousel-caption {
-    background: rgba(74, 35, 90, 0.7);
+    background: rgba(3, 63, 99, 0.7); /* Primary con opacidad */
     padding: 30px;
     border-radius: 15px;
 }
 
-/* --- Sección de Noticias --- */
-.news-section {
-    background-color: #fff;
+/* --- Secciones --- */
+.news-section, .contact-section {
+    background-color: var(--white);
 }
 
-.news-section h2, .services-section h2, .contact-section h2 {
-    color: #4A235A;
+.services-section {
+    background-color: var(--accent);
 }
 
 .card {
@@ -69,151 +86,54 @@ h2 {
 
 .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-}
-
-.card-img-top {
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
-    height: 220px;
-    object-fit: cover;
-}
-
-.card-meta {
-    font-size: 0.85rem;
-    color: #6c757d;
+    box-shadow: 0 8px 25px rgba(40, 102, 110, 0.3); /* Sombra con --secondary */
 }
 
 .card-meta .category {
-    font-weight: 700;
-    color: #af69cd;
+    color: var(--secondary);
 }
 
-.card-title {
-    color: #4A235A;
-    font-weight: 600;
-}
-
-/* --- Sección de Servicios --- */
-.services-section {
-    background-color: #e6ccef;
-}
-
-.service-item i {
-    color: #af69cd;
-    transition: transform 0.3s ease;
-}
-
-.service-item:hover i {
-    transform: scale(1.2);
-}
-
-.service-item h4 {
-    margin-top: 15px;
-    font-weight: 600;
-    color: #4A235A;
-}
-
-/* --- Sección de Llamada a la Acción (CTA) --- */
-.cta-section {
-    position: relative;
-    background: url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop') center center/cover no-repeat;
-    z-index: 1;
-}
-
-.cta-section::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: linear-gradient(45deg, rgba(74, 35, 90, 0.85), rgba(175, 105, 205, 0.85));
-    z-index: -1;
-}
-
-.cta-section h2 {
-    font-weight: 700;
-}
-
-.cta-section .btn-light {
-    font-weight: 600;
-    padding: 12px 30px;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-.cta-section .btn-light:hover {
-    transform: scale(1.05);
-    background-color: #f0f0f0;
-}
-
-/* --- Sección de Contacto --- */
-.contact-section {
-    background-color: #fff;
-}
-
-.form-control:focus {
-    border-color: #af69cd;
-    box-shadow: 0 0 0 0.25rem rgba(175, 105, 205, 0.25);
-}
-
-/* --- Botones y Elementos Interactivos --- */
+/* --- Botones --- */
 .btn-primary {
-    background-color: #af69cd;
-    border-color: #af69cd;
-    font-weight: 600;
-    padding: 10px 25px;
-    border-radius: 8px;
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
     transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #cb9bde;
-    border-color: #cb9bde;
-    transform: scale(1.05);
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--white);
 }
 
 .btn-outline-primary {
-    color: #af69cd;
-    border-color: #af69cd;
-    font-weight: 600;
-    padding: 10px 25px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    color: var(--primary);
+    border-color: var(--primary);
 }
 
 .btn-outline-primary:hover {
-    color: #fff;
-    background-color: #af69cd;
-    border-color: #af69cd;
-    transform: scale(1.05);
+    color: var(--white);
+    background-color: var(--primary);
+    border-color: var(--primary);
 }
 
-.social-icons a:hover {
-    color: #cb9bde !important;
+/* --- Formularios --- */
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(3, 63, 99, 0.25);
+}
+
+/* --- Footer y Scroll-to-Top --- */
+footer {
+    background-color: var(--primary) !important;
 }
 
 .scroll-to-top {
-    position: fixed;
-    bottom: 20px; right: 20px;
-    width: 50px; height: 50px;
-    background-color: #af69cd;
-    color: #fff;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 50px;
-    font-size: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    transition: all 0.4s ease;
-    opacity: 0; visibility: hidden;
-    z-index: 1000;
+    background-color: var(--primary);
+    color: var(--white);
 }
 
 .scroll-to-top:hover {
-    background-color: #cb9bde;
-    color: #fff;
-    transform: scale(1.1);
-}
-
-.scroll-to-top.visible {
-    opacity: 1;
-    visibility: visible;
+    background-color: var(--secondary);
 }

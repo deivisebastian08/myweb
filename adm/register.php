@@ -21,7 +21,7 @@ $mensaje = isset($_GET['error']) ? urldecode($_GET['error']) : "Crea una nueva c
     <link rel="stylesheet" href="css/bootstrap.min.css">
     
     <!-- COMENTARIO: Reutilizamos la misma hoja de estilos del login para mantener la consistencia. -->
-    <link rel="stylesheet" href="css/login-style.css?v=4.2">
+    <link rel="stylesheet" href="css/login-style.css?v=5.0">
 
 </head>
 <body>
@@ -41,6 +41,11 @@ $mensaje = isset($_GET['error']) ? urldecode($_GET['error']) : "Crea una nueva c
                 <div class="input-group mb-3">
                     <span class="input-group-text"><i class="fas fa-user"></i></span>
                     <input type="text" name="users" class="form-control" placeholder="Username" required>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" name="email" class="form-control" placeholder="Correo Electrónico" required>
                 </div>
                 
                 <div class="input-group mb-3">

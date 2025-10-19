@@ -26,19 +26,30 @@ class MySQLcn {
 	
 	// Envía la consulta a la conexión
 	public function Query($sql) {
-		$this->_result = $this->_link->query($sql) or die(mysqli_error($this->_result));
-		$this->_numRows = mysqli_num_rows($this->_result);
+		$this->_result = $this->_link->query($sql);
+		if ($this->_result === false) {
+			// Registrar y propagar el error adecuadamente
+			throw new \Exception('MySQL Query Error: ' . mysqli_error($this->_link));
+		}
+		// Para consultas SELECT, _result es un mysqli_result; para otras, puede ser bool
+		$this->_numRows = (is_object($this->_result)) ? mysqli_num_rows($this->_result) : 0;
 	}
 	
 	// Inserta en databse
 	public function UpdateDb($sql) {
-		$this->_result = $this->_link->query($sql) or die(mysqli_error($this->_result));
+		$this->_result = $this->_link->query($sql);
+		if ($this->_result === false) {
+			throw new \Exception('MySQL Update Error: ' . mysqli_error($this->_link));
+		}
 		return $this->_result;
 	}
 	
 	// Inserta y retorna ID
 	public function InsertaDb($sql) {
-		$this->_link->query($sql) or die(mysqli_error($this->_result));
+		$res = $this->_link->query($sql);
+		if ($res === false) {
+			throw new \Exception('MySQL Insert Error: ' . mysqli_error($this->_link));
+		}
 		return mysqli_insert_id($this->_link);
 	}
 	

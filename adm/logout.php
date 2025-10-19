@@ -26,7 +26,7 @@ session_destroy();
 // Asegurarse de que no haya salida antes de la redirección
 ob_clean();
 
-// Redirigir al index principal
-header("Location: ../index.php");
+// Redirigir a la página de login del admin con un mensaje de éxito
+header("Location: index.php?mensaje=" . urlencode("Has cerrado sesión correctamente."));
 exit();
 ?>

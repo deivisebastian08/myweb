@@ -20,8 +20,7 @@ $mensaje = isset($_GET['mensaje']) ? urldecode($_GET['mensaje']) : "Por favor, i
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     
-    <!-- COMENTARIO: Versión restaurada a 4.2. -->
-    <link rel="stylesheet" href="css/login-style.css?v=4.2">
+    <link rel="stylesheet" href="css/login-style.css?v=5.0">
 
     <script language='JavaScript' type='text/javascript' src='js/generax.js'></script>
 </head>
@@ -34,11 +33,7 @@ $mensaje = isset($_GET['mensaje']) ? urldecode($_GET['mensaje']) : "Por favor, i
             </div>
             
             <h1 class="welcome-script">Welcome to the Website</h1>
-            
-            <p class="welcome-text">
-                <?php echo htmlspecialchars($mensaje); ?>
-            </p>
-            
+            <p class="welcome-text"><?php echo htmlspecialchars($mensaje); ?></p>
             <h2 class="login-heading">USER LOGIN</h2>
             
             <form name='sesion' action='login.php' onSubmit='return iniciar();' method='POST'>
@@ -75,8 +70,9 @@ $mensaje = isset($_GET['mensaje']) ? urldecode($_GET['mensaje']) : "Por favor, i
                 </div>
             </form>
 
+            <!-- COMENTARIO: Se añade el enlace a la página de registro. -->
             <div class="mt-4 text-center links">
-                <a href="../index.php">&larr; Back to main website</a>
+                <span>Don't have an account? <a href="register.php">Sign Up</a></span>
             </div>
         </div>
     </div>

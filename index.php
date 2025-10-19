@@ -1,13 +1,23 @@
 <?php
-// La lógica para obtener banners de la base de datos está comentada.
-/*
-require_once("adm/script/conex.php");
-$cn = new MySQLcn();
-$sql = "SELECT Titulo, Describir, Enlace, Imagen FROM banner WHERE estado = 1 ORDER BY fecha DESC";
-$cn->Query($sql);
-$banners = $cn->Rows();
-$cn->Close();
-*/
+session_start();
+
+// Registrar visita automáticamente
+require_once 'registro_visita.php';
+require_once 'adm/script/Supabase.php';
+
+// Detectar si el usuario es Super Admin
+$rolSlug = strtolower(str_replace(['_',' '], '-', $_SESSION['user_rol_slug'] ?? ''));
+$rolId = isset($_SESSION['rol_id']) ? (int)$_SESSION['rol_id'] : null;
+$isSuperAdmin = in_array($rolSlug, ['super-admin','super_admin','admin-principal'], true) || ($rolId === 1);
+
+// Obtener noticias publicadas desde Supabase
+$sb = new Supabase();
+$noticias = $sb->from('noticias', [
+    'select' => 'id,titulo,slug,extracto,imagen_destacada,fecha_publicacion,vistas,tags',
+    'estado' => 'eq.publicado',
+    'order' => 'fecha_publicacion.desc',
+    'limit' => 6
+]) ?? [];
 ?>
 
 <!DOCTYPE html>
@@ -16,21 +26,20 @@ $cn->Close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calidad de Software</title>
-    <!-- Google Fonts (Poppins) -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
-    <!-- COMENTARIO: Versión restaurada a 2.3. -->
-    <link rel="stylesheet" href="css/styles.css?v=2.3">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- COMENTARIO: Versión actualizada a 3.0 para la nueva paleta de colores. -->
+    <link rel="stylesheet" href="css/styles.css?v=3.0">
+    <link rel="stylesheet" href="css/apple-effects.css?v=1.0">
 </head>
 <body>
-    <!-- Navigation Menu -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="#">Calidad de Software</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -42,130 +51,166 @@ $cn->Close();
                     <li class="nav-item"><a class="nav-link" href="#noticias">Noticias</a></li>
                     <li class="nav-item"><a class="nav-link" href="#servicios">Servicios</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contacto">Contacto</a></li>
-                    <li class="nav-item"><a class="nav-link" href="adm/index.php">Iniciar Sesión</a></li>
+                    <?php if ($isSuperAdmin) { ?>
+                        <li class="nav-item"><a class="nav-link" href="adm/router.php">Volver a tu Panel</a></li>
+                    <?php } else { ?>
+                        <li class="nav-item"><a class="nav-link" href="adm/index.php">Iniciar Sesión</a></li>
+                    <?php } ?>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Carrusel con imágenes de Internet -->
-    <header id="inicio">
-        <div id="bannerCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide="1"></button>
-                <button type="button" data-bs-target="#bannerCarousel" data-bs-slide="2"></button>
+    <!-- HERO SECTION with PARALLAX SCROLLING -->
+    <header id="inicio" class="apple-hero">
+        <div class="parallax-layer back" style="background: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1950&q=80') center/cover; opacity: 0.3;"></div>
+        <div class="parallax-layer middle" style="background: radial-gradient(circle, rgba(102,126,234,0.3) 0%, transparent 70%);"></div>
+        
+        <div class="apple-hero-content">
+            <h1>Calidad de Software Premium</h1>
+            <p>Llevamos tu negocio al siguiente nivel con soluciones tecnológicas de clase mundial</p>
+            <div class="cta-buttons">
+                <a href="#servicios" class="btn-primary-apple">Explorar Servicios</a>
+                <a href="#contacto" class="btn-secondary-apple">Contáctanos</a>
             </div>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1950&q=80" class="d-block w-100" alt="Consultoría de Negocios">
-                    <div class="carousel-caption d-none d-md-block"><h3>Consultoría Estratégica de Software</h3><p>Alineamos la tecnología con sus objetivos de negocio para un crecimiento sostenible.</p><a href="#contacto" class="btn btn-primary">Contáctanos</a></div>
-                </div>
-                <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1517694712202-1428bc648c2a?auto=format&fit=crop&w=1950&q=80" class="d-block w-100" alt="Desarrollo de Software">
-                    <div class="carousel-caption d-none d-md-block"><h3>Desarrollo y Calidad de Código</h3><p>Creamos soluciones robustas y escalables con los más altos estándares de calidad.</p><a href="#servicios" class="btn btn-primary">Nuestros Servicios</a></div>
-                </div>
-                <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=1950&q=80" class="d-block w-100" alt="Seguridad Digital">
-                    <div class="carousel-caption d-none d-md-block"><h3>Seguridad y Auditoría de Sistemas</h3><p>Protegemos sus activos digitales con auditorías de seguridad exhaustivas.</p><a href="#servicios" class="btn btn-primary">Saber Más</a></div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#bannerCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
-            <button class="carousel-control-next" type="button" data-bs-target="#bannerCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
         </div>
     </header>
 
-    <!-- Sección de Noticias Modificada -->
-    <section id="noticias" class="news-section py-5">
+    <!-- NOTICIAS DESDE SUPABASE -->
+    <section id="noticias" class="py-5" style="background: white;">
         <div class="container">
-            <h2 class="text-center mb-5">Últimas Noticias</h2>
+            <h2 class="text-center mb-2" style="font-size: 3rem; font-weight: 700; color: var(--apple-black);">Últimas Noticias</h2>
+            <p class="text-center mb-5" style="font-size: 1.2rem; color: #666;">Mantente informado con las últimas tendencias en desarrollo de software</p>
+            
+            <?php if (count($noticias) > 0): ?>
             <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="images/news/news_1.png" class="card-img-top" alt="Testing Automatizado">
-                        <div class="card-body">
-                            <div class="card-meta mb-2">
-                                <span class="category">Testing</span> | <span class="date">15 de Julio, 2024</span>
+                <?php 
+                $gradients = [
+                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                    'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                    'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                    'linear-gradient(135deg, #30cfd0 0%, #330867 100%)'
+                ];
+                foreach ($noticias as $index => $noticia): 
+                    $gradiente = $gradients[$index % count($gradients)];
+                    $imagen = $noticia['imagen_destacada'] ?? 'https://images.unsplash.com/photo-1517694712202-1428bc648c2a?auto=format&fit=crop&w=800&q=80';
+                    $titulo = htmlspecialchars($noticia['titulo']);
+                    $extracto = htmlspecialchars($noticia['extracto'] ?? 'Lee más sobre este tema...');
+                    $slug = htmlspecialchars($noticia['slug']);
+                    $fecha = date('d M Y', strtotime($noticia['fecha_publicacion'] ?? $noticia['created_at'] ?? 'now'));
+                    $vistas = number_format($noticia['vistas'] ?? 0);
+                ?>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm" style="border: none; border-radius: 15px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease;" 
+                         onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 12px 24px rgba(0,0,0,0.15)';" 
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)';">
+                        <div style="position: relative; height: 220px; overflow: hidden;">
+                            <img src="<?php echo $imagen; ?>" 
+                                 class="card-img-top" 
+                                 alt="<?php echo $titulo; ?>" 
+                                 style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+                            <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+                                <span style="background: rgba(255,255,255,0.9); color: #333; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                                    <i class="far fa-calendar"></i> <?php echo $fecha; ?>
+                                </span>
                             </div>
-                            <h5 class="card-title">El Futuro del Testing Automatizado</h5>
-                            <p class="card-text">Descubre las nuevas tendencias y herramientas que están revolucionando las pruebas de software.</p>
-                            <a href="#" class="btn btn-primary">Leer más</a>
+                        </div>
+                        <div class="card-body d-flex flex-column" style="padding: 1.5rem;">
+                            <h5 class="card-title" style="font-weight: 700; font-size: 1.2rem; color: #1a1a1a; margin-bottom: 1rem; line-height: 1.4;">
+                                <?php echo $titulo; ?>
+                            </h5>
+                            <p class="card-text" style="color: #666; font-size: 0.95rem; line-height: 1.6; flex-grow: 1;">
+                                <?php echo substr($extracto, 0, 120) . (strlen($extracto) > 120 ? '...' : ''); ?>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3" style="border-top: 1px solid #e0e0e0;">
+                                <a href="articulos.php?slug=<?php echo $slug; ?>" class="btn btn-sm" style="background: <?php echo $gradiente; ?>; color: white; border: none; padding: 0.5rem 1.5rem; border-radius: 25px; font-weight: 600; transition: all 0.3s;" 
+                                   onmouseover="this.style.transform='scale(1.05)';" 
+                                   onmouseout="this.style.transform='scale(1)';">
+                                    Leer más <i class="fas fa-arrow-right ms-1"></i>
+                                </a>
+                                <small class="text-muted">
+                                    <i class="far fa-eye"></i> <?php echo $vistas; ?> vistas
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="images/news/news_2.jpg" class="card-img-top" alt="DevOps y Calidad">
-                        <div class="card-body">
-                            <div class="card-meta mb-2">
-                                <span class="category">DevOps</span> | <span class="date">10 de Julio, 2024</span>
-                            </div>
-                            <h5 class="card-title">DevOps y su Impacto en la Calidad</h5>
-                            <p class="card-text">Cómo la integración continua y la entrega continua son clave para un software de alta calidad.</p>
-                            <a href="#" class="btn btn-primary">Leer más</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <img src="images/news/news_3.jpg" class="card-img-top" alt="Seguridad en el Desarrollo">
-                        <div class="card-body">
-                            <div class="card-meta mb-2">
-                                <span class="category">Seguridad</span> | <span class="date">5 de Julio, 2024</span>
-                            </div>
-                            <h5 class="card-title">Seguridad Desde el Inicio (DevSecOps)</h5>
-                            <p class="card-text">Integra la seguridad en cada fase del ciclo de vida del desarrollo para crear aplicaciones robustas.</p>
-                            <a href="#" class="btn btn-primary">Leer más</a>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
+            
             <div class="text-center mt-4">
-                <a href="#" class="btn btn-outline-primary">Ver Todas las Noticias</a>
+                <a href="articulos.php" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 3rem; border-radius: 50px; font-weight: 600; transition: all 0.3s;" 
+                   onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 8px 20px rgba(102, 126, 234, 0.4)';" 
+                   onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';">
+                    Ver Todos los Artículos <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            <?php else: ?>
+            <div class="alert alert-info text-center" style="font-size: 1.1rem;">
+                <i class="fas fa-info-circle"></i> Aún no hay noticias publicadas. ¡Vuelve pronto!
+            </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <!-- REVEAL ON SCROLL SECTION -->
+    <section id="servicios" class="reveal-section" style="background: white;">
+        <div class="container">
+            <h2 class="text-center mb-5" style="font-size: 3rem; font-weight: 700; color: var(--apple-black);">Nuestros Servicios</h2>
+            
+            <div class="reveal-item">
+                <div class="reveal-image">
+                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=800&q=80" alt="Testing">
+                </div>
+                <div class="reveal-content">
+                    <h3>Testing Automatizado</h3>
+                    <p>Implementamos pruebas automatizadas para asegurar la calidad continua de tu software. Nuestro enfoque incluye testing unitario, de integración y end-to-end.</p>
+                    <a href="#contacto" class="btn-apple">Saber más</a>
+                </div>
+            </div>
+            
+            <div class="reveal-item">
+                <div class="reveal-image">
+                    <img src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?auto=format&fit=crop&w=800&q=80" alt="Seguridad">
+                </div>
+                <div class="reveal-content">
+                    <h3>Auditoría de Seguridad</h3>
+                    <p>Analizamos y fortalecemos la seguridad de tus aplicaciones contra vulnerabilidades. Identificamos riesgos y proporcionamos soluciones efectivas.</p>
+                    <a href="#contacto" class="btn-apple">Saber más</a>
+                </div>
+            </div>
+            
+            <div class="reveal-item">
+                <div class="reveal-image">
+                    <img src="https://images.unsplash.com/photo-1517694712202-1428bc648c2a?auto=format&fit=crop&w=800&q=80" alt="DevOps">
+                </div>
+                <div class="reveal-content">
+                    <h3>Consultoría DevOps</h3>
+                    <p>Optimizamos tus ciclos de desarrollo y despliegue con las mejores prácticas DevOps. CI/CD, automatización y monitoreo continuo.</p>
+                    <a href="#contacto" class="btn-apple">Saber más</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="servicios" class="services-section py-5">
-        <div class="container">
-            <h2 class="text-center mb-5">Nuestros Servicios</h2>
-            <div class="row text-center">
-                <div class="col-md-4 mb-4">
-                    <div class="service-item">
-                        <i class="fas fa-robot fa-3x mb-3"></i>
-                        <h4>Testing Automatizado</h4>
-                        <p>Implementamos pruebas automatizadas para asegurar la calidad continua de tu software.</p>
-                    </div>
+    <!-- MAGNETIC CARD SECTION -->
+    <section class="magnetic-container" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="magnetic-card">
+            <div class="magnetic-card-content">
+                <h3>¿Listo para empezar?</h3>
+                <p>Lleva la calidad de tu software al siguiente nivel. Nuestro equipo de expertos está listo para ayudarte a alcanzar tus objetivos tecnológicos.</p>
+                <div style="margin-top: 2rem;">
+                    <a href="#contacto" class="btn-apple" style="display: inline-block;">Contáctanos ahora</a>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="service-item">
-                        <i class="fas fa-shield-alt fa-3x mb-3"></i>
-                        <h4>Auditoría de Seguridad</h4>
-                        <p>Analizamos y fortalecemos la seguridad de tus aplicaciones contra vulnerabilidades.</p>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <div class="service-item">
-                        <i class="fas fa-rocket fa-3x mb-3"></i>
-                        <h4>Consultoría DevOps</h4>
-                        <p>Optimizamos tus ciclos de desarrollo y despliegue con las mejores prácticas DevOps.</p>
-                    </div>
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e0e0e0;">
+                    <p style="font-size: 0.9rem; color: var(--apple-gray); margin: 0;">✓ Respuesta en menos de 24 horas<br>✓ Consulta inicial gratuita<br>✓ Sin compromiso</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Call to Action Section -->
-    <section class="cta-section text-white text-center py-5">
-        <div class="container">
-            <h2 class="display-4">¿Listo para empezar?</h2>
-            <p class="lead">Lleva la calidad de tu software al siguiente nivel con nosotros.</p>
-            <a href="#contacto" class="btn btn-light btn-lg">¡Contáctanos!</a>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
     <section id="contacto" class="contact-section py-5">
         <div class="container">
             <h2 class="text-center mb-5">Contacto</h2>
@@ -183,7 +228,6 @@ $cn->Close();
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
             <div class="social-icons mb-3">
@@ -196,13 +240,10 @@ $cn->Close();
         </div>
     </footer>
 
-    <a href="#inicio" class="scroll-to-top">
-        <i class="fas fa-arrow-up"></i>
-    </a>
+    <a href="#inicio" class="scroll-to-top"><i class="fas fa-arrow-up"></i></a>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
     <script src="js/main.js"></script>
+    <script src="js/apple-effects.js"></script>
 </body>
 </html>
